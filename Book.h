@@ -9,7 +9,11 @@ class Book {
         std::string title;
         Author author;
         Genre genre;
+    public:
+        Book::Book(int bookID, std::string title, Author author, Genre genre);
 
-    Book::Book(int bookID, std::string title, Author author, Genre genre);
+        int GetBookID() {}
+
+        
 };
 

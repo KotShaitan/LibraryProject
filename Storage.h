@@ -6,19 +6,16 @@
 
 class Storage {
     private: 
-        std::vector<Book> Books;
+        static std::vector<Book> Books;
         int ID_count;
     public:
-        void RemoveBook(int ID) {
+        static void RemoveBook(int ID) {
 
         }
-        void AddBook(Book Book) {
+        static void AddBook(Book Book) {
 
         }
-        void UpdateBook(Book book) {
+        static Book GetBookByID(int ID) {
 
-        }
-        Book GetBookByID(int ID) {
-            return;
         }
 };
