@@ -11,7 +11,7 @@ class User {
         std::string Password;
         Bookmark bookmark;
     public:
-        User::User(std::string login, std::string password, Bookmark bookmark){}
+        User::User(std::string login, std::string password){ Bookmark userbookmar(); }
 
         void AddToBookmark(int ID) {
         }
