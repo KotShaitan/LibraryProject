@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Библиотека - Главная</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-book"></i>
+                <span>Библиотека</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active"><i class="fas fa-home"></i> Главная</a></li>
+                <li><a href="bookmark.html"><i class="fas fa-bookmark"></i> Закладки</a></li>
+                <li><a href="admin.html"><i class="fas fa-user-cog"></i> Админ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="header-section">
+                <h1><i class="fas fa-book-reader"></i> Каталог книг</h1>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Поиск книг...">
+                    <button id="searchBtn"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <select id="genreFilter">
+                    <option value="">Все жанры</option>
+                </select>
+                <select id="sortSelect">
+                    <option value="title">По названию (А-Я)</option>
+                    <option value="title_desc">По названию (Я-А)</option>
+                    <option value="author">По автору</option>
+                </select>
+            </div>
+
+            <div id="booksContainer" class="books-grid">
+            </div>
+        </div>
+    </main>
+
+    <div id="addBookModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-plus-circle"></i> Добавить новую книгу</h2>
+            <form id="addBookForm">
+                <div class="form-group">
+                    <label for="bookTitle">Название книги:</label>
+                    <input type="text" id="bookTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="authorName">Имя автора:</label>
+                    <input type="text" id="authorName" required>
+                </div>
+                <div class="form-group">
+                    <label for="authorLname">Фамилия автора:</label>
+                    <input type="text" id="authorLname" required>
+                </div>
+                <div class="form-group">
+                    <label for="authorPatronymic">Отчество автора:</label>
+                    <input type="text" id="authorPatronymic">
+                </div>
+                <div class="form-group">
+                    <label for="bookGenre">Жанр:</label>
+                    <input type="text" id="bookGenre" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookDescription">Описание:</label>
+                    <textarea id="bookDescription" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Добавить книгу</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
