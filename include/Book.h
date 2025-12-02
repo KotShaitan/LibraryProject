@@ -14,7 +14,5 @@ class Book {
         int GetBookID();
 
         Genre GetGenre();
-
-        
 };
 

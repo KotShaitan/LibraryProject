@@ -8,6 +8,7 @@ class Storage {
         static std::vector<Book> Books;
         int ID_count;
     public:
+        std::vector<Book> GetListOfBook();
         static void RemoveBook(int ID);
         static void AddBook(Book Book);
         static Book GetBookByID(int ID);

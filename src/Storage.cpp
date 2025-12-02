@@ -19,6 +19,10 @@ Book Storage::GetBookByID(int ID) {
 
 }
 
+std::vector<Book> Storage::GetListOfBook() {
+    return Books;
+}
+
 void Storage::AddBook(Book book) {
         Books.push_back(book);
 }
