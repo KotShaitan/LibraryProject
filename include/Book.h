@@ -1,7 +1,6 @@
 #pragma once
-
-#include "Author.h"
 #include "Genre.h"
+#include "Author.h"
 #include <string>
 class Book {
     private: 
@@ -10,9 +9,11 @@ class Book {
         Author author;
         Genre genre;
     public:
-        Book::Book(int bookID, std::string title, Author author, Genre genre);
+        Book(int bookID, std::string title, Author author, Genre genre);
 
-        int GetBookID() {}
+        int GetBookID();
+
+        Genre GetGenre();
 
         
 };

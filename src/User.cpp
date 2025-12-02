@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-User::User(std::string login, std::string password) : Login(login), Password(password) { Bookmark userbookmark();}
+User::User(std::string login, std::string password) : Login(login), Password(password) { Bookmark userbookmark{};}
 
 void User::AddToBookmark(int ID) {
     bookmark.AddToBookmark(ID);

@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/include/asio/include",
+                "${workspaceFolder}/**",
+                "C:/Users/kot_shaitan/Desktop/Library_CC/include",
+                "C:/Users/kot_shaitan/Desktop/Library_CC/include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "ASIO_STANDALONE",
+                "CROW_USE_JSON",
+                "CROW_MAIN"
+            ],
+            "windowsSdkVersion": "10.0.19041.0",
+            "compilerPath": "C:/Users/kot_shaitan/gcc/bin/g++.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-gcc-x64"
+        }
+    ],
+    "version": 4
+}

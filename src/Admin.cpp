@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+Admin::Admin(std::string login, std::string password) 
+    : User(login, password) {} 
 void Admin::AddBook(Book book) {
     Storage::AddBook(book);
 }

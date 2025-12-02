@@ -8,3 +8,7 @@ Book::Book(int bookID, std::string title, Author author, Genre genre) : bookID(b
 int Book::GetBookID() {
     return bookID;
 }
+
+Genre Book::GetGenre() {
+    return genre;
+}

@@ -4,7 +4,10 @@
 #include "Genre.h"
 #include <string>
 #include <vector>
+#include <stdexcept>
 #include <algorithm>
+
+std::vector<Book> Storage::Books;
 
 Book Storage::GetBookByID(int ID) {
     for (auto book : Books) {
@@ -12,6 +15,8 @@ Book Storage::GetBookByID(int ID) {
             return book;
         }
     }
+    throw std::out_of_range("Book not found");
+
 }
 
 void Storage::AddBook(Book book) {

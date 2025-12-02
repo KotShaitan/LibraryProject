@@ -25,5 +25,5 @@ void Bookmark::RemoveFromBookmark(int ID) {
 }
 
 Book Bookmark::RecomendBook() {
-    
+    return Books[0];
 }

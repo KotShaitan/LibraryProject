@@ -1,3 +1,6 @@
+
+#define CROW_MAIN
+#include "crow.h"
 #include "Admin.h"
 #include "Author.h"
 #include "Book.h"
@@ -5,6 +8,7 @@
 #include "Genre.h"
 #include "Storage.h"
 #include "User.h"
+
 #include <string>
 #include <vector>
 

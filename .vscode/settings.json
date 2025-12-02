@@ -1,0 +1,30 @@
+{
+    "C_Cpp.default.intelliSenseMode": "windows-gcc-x64",
+    "C_Cpp.default.compilerPath": "C:/MinGW/bin/g++.exe",
+    "C_Cpp.default.cppStandard": "c++17",
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/include",
+        "${workspaceFolder}/include/crow",
+        "${workspaceFolder}/include/asio/include"
+    ],
+    "C_Cpp.default.defines": [
+        "ASIO_STANDALONE",
+        "CROW_MAIN"
+    ],
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.autocomplete": "default",
+    
+    // Отключите CMake Tools как провайдер конфигурации
+    "C_Cpp.configurationProvider": "",
+    
+    "files.associations": {
+        "*.cpp": "cpp",
+        "*.h": "cpp",
+        "*.hpp": "cpp",
+        "*.tcc": "cpp"
+    },
+    
+    // Отключите авто-конфигурацию если есть
+    "cmake.configureOnOpen": false,
+    "C_Cpp.autoAddFileAssociations": false
+}
