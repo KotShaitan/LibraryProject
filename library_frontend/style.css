@@ -368,3 +368,193 @@ nav {
         flex-direction: column;
     }
 }
+
+
+.btn-read {
+    background-color: #9b59b6;
+    color: white;
+    flex: 1;
+}
+
+.btn-read:hover {
+    background-color: #8e44ad;
+}
+
+.book-text-modal .modal-content {
+    max-width: 800px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.book-text-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.book-text-author {
+    color: #7f8c8d;
+    margin: 5px 0;
+    font-style: italic;
+}
+
+.book-text-genre {
+    display: inline-block;
+    background-color: #e8f4fc;
+    color: #3498db;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.book-text-body {
+    flex: 1;
+    overflow-y: auto;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    line-height: 1.8;
+    font-size: 1.1rem;
+    color: #333;
+    border: 1px solid #eee;
+}
+
+.book-text-container {
+    white-space: pre-wrap;
+    font-family: 'Georgia', serif;
+    line-height: 1.8;
+}
+
+.book-text-actions {
+    display: flex;
+    gap: 15px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.book-text-actions .btn {
+    flex: 1;
+}
+
+.empty-bookmarks {
+    text-align: center;
+    padding: 60px 20px;
+    color: #7f8c8d;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.empty-bookmarks i {
+    color: #ddd;
+    margin-bottom: 20px;
+    font-size: 4rem;
+}
+
+.empty-bookmarks h3 {
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.bookmarks-section, .recommended-section {
+    margin-bottom: 50px;
+}
+
+.bookmarks-section h2, .recommended-section h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bookmarks-grid, .recommended-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.recommended-section {
+    background: linear-gradient(135deg, #fffbf0, #fff8e1);
+    padding: 30px;
+    border-radius: 12px;
+    border-left: 5px solid #f1c40f;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.recommended-description {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+.recommended-card {
+    border: 2px solid #f1c40f;
+    position: relative;
+}
+
+.recommended-card::before {
+    content: 'Рекомендуем';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #f1c40f;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    z-index: 1;
+}
+
+.book-description {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 10px 0 15px;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .book-text-modal .modal-content {
+        width: 95%;
+        height: 95vh;
+    }
+    
+    .book-text-body {
+        padding: 15px;
+        font-size: 1rem;
+    }
+    
+    .book-text-actions {
+        flex-direction: column;
+    }
+    
+    .bookmarks-grid, .recommended-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    
+    .recommended-section {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .bookmarks-grid, .recommended-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .book-text-header h2 {
+        font-size: 1.3rem;
+    }
+}
