@@ -57,9 +57,6 @@ Book Bookmark::RecomendBookAlg() {
         }
     }
     
-    
-    
-    
     for (auto& book : Storage::GetListOfBooks()) {
         if (book.GetGenre().GetName() == mostFrequentGenre) {
             return book;

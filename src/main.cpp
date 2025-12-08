@@ -44,19 +44,113 @@ int main() {
         return crow::response{result};
     });
 
-    /*
+    
     CROW_ROUTE(app, "/bookmark").methods("GET"_method)([&user1](){
         crow::json::wvalue result;
-        result = user1.GetBooksAsJson();
-        return crow::response{result};
-    });
-    CROW_ROUTE(app, "/bookmark").methods("GET"_method)([&user1](){
-        crow::json::wvalue result;
+        result["Books"] = user1.GetBooksAsJson();
         auto book = user1.RecomendBook();
-        result = book->ToJson();
+
+        if (book.has_value()) {
+        // Книга есть - преобразуем в JSON
+        result["Recommendation"] = book.value().ToJson();
+        } else {
+            // Нет рекомендации - возвращаем null или пустой объект
+            result["Recommendation"] = nullptr;
+        }
         return crow::response{result};
     });
-    */
+    
+    CROW_ROUTE(app, "/home/book/<int>/detail").methods("GET"_method)([](int id){
+        crow::json::wvalue result;
+        result = Storage::GetBookByID(id).ToJsonWithText();
+        return crow::response{result};
+    });
+
+    CROW_ROUTE(app, "/bookmark/add").methods("POST"_method)  ([&user1](const crow::request& req)
+    {
+        auto json = crow::json::load(req.body);
+        if (!json) {
+            // Невалидный JSON
+            crow::json::wvalue error;
+            error["error"] = "Invalid JSON";
+            return crow::response{400, error};
+        }
+        int id = json["bookID"].i();
+        user1.AddToBookmark(id);
+
+        crow::json::wvalue response;
+        return crow::response{200, response};
+    });
+
+    CROW_ROUTE(app, "/bookmark/remove").methods("DELETE"_method)  ([&user1](const crow::request& req)
+    {
+        auto json = crow::json::load(req.body);
+        if (!json) {
+            // Невалидный JSON
+            crow::json::wvalue error;
+            error["error"] = "Invalid JSON";
+            return crow::response{400, error};
+        }
+        int id = json["bookID"].i();
+        user1.RemoveFromBookmark(id);
+        crow::json::wvalue response;
+        return crow::response{200, response};
+    });
+
+    CROW_ROUTE(app, "/admin").methods("GET"_method)([](){
+        crow::json::wvalue result;
+        result = Storage::GetBooksAsJson();
+        return crow::response{result};
+    });  
+
+    CROW_ROUTE(app, "/admin/remove").methods("DELETE"_method)([&admin](const crow::request& req){
+        auto json = crow::json::load(req.body);
+        if (!json) {
+            // Невалидный JSON
+            crow::json::wvalue error;
+            error["error"] = "Invalid JSON";
+            return crow::response{400, error};
+        }
+        int id = json["bookID"].i();
+        admin.RemoveBook(id);
+        crow::json::wvalue response;
+        return crow::response{200, response};
+    });  
+    
+
+    
+    CROW_ROUTE(app, "/admin/add").methods("POST"_method)  ([&admin](const crow::request& req){
+        auto json = crow::json::load(req.body);
+        
+        if (!json) {
+            // Невалидный JSON
+            crow::json::wvalue error;
+            error["error"] = "Invalid JSON";
+            return crow::response{400, error};
+        }
+        
+        // Извлекаем данные из JSON
+        std::string title = json["title"].s();
+        std::string genre = json["genre"].s();
+        std::string text = json["text"].s();
+        
+        auto authorJson = json["author"];
+        std::string firstName = authorJson["first_name"].s();
+        std::string lastName = authorJson["last_name"].s();
+        std::string middleName = authorJson["middle_name"].s();
+        
+        // Создаем автора с полным именем
+        Author author(firstName, lastName, middleName);
+        // Создаем новую книгу
+        int newId = Storage::GenerateBookID();
+        Book newBook(newId, title, Author(author), Genre(genre), text);
+        admin.AddBook(newBook);
+        crow::json::wvalue response;
+        return crow::response{200, response};
+    }); 
+    
+    
+    
 
 
     

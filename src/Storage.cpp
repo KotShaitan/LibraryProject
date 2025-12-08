@@ -8,6 +8,7 @@
 #include <algorithm>
 
 std::vector<Book> Storage::Books;
+int Storage::id_count = 0;
 
 Book Storage::GetBookByID(int ID) {
     for (auto book : Books) {
@@ -25,6 +26,7 @@ std::vector<Book> Storage::GetListOfBooks() {
 
 void Storage::AddBook(Book book) {
         Books.push_back(book);
+        id_count++;
 }
 
 void Storage::RemoveBook(int ID) {
@@ -46,4 +48,8 @@ crow::json::wvalue Storage::GetBooksAsJson() {
     }
     
     return result;
+}
+
+int Storage::GenerateBookID() {
+    return ++id_count;
 }
