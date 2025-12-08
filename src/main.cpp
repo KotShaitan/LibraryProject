@@ -23,7 +23,7 @@ int main() {
     Author author1("Lev", "Tolstiy", "");
     authors.push_back(author1);
 
-    Book book(1, "War and Piece", authors[0], novel);
+    Book book(1, "War and Piece", authors[0], novel, "Lorem");
 
     Storage::AddBook(book);
 
@@ -40,22 +40,24 @@ int main() {
     
     CROW_ROUTE(app, "/home/book/<int>").methods("GET"_method)([](int id){
         crow::json::wvalue result;
-        result = Storage::GetBookByID(id).ToJson();
+        result = Storage::GetBookByID(id).ToJsonWithText();
         return crow::response{result};
     });
 
+    /*
     CROW_ROUTE(app, "/bookmark").methods("GET"_method)([&user1](){
         crow::json::wvalue result;
         result = user1.GetBooksAsJson();
         return crow::response{result};
     });
-    
     CROW_ROUTE(app, "/bookmark").methods("GET"_method)([&user1](){
         crow::json::wvalue result;
         auto book = user1.RecomendBook();
         result = book->ToJson();
         return crow::response{result};
     });
+    */
+
 
     
     app.port(8080).run();

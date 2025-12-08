@@ -9,14 +9,15 @@ class Book {
         std::string title;
         Author author;
         Genre genre;
+        std::string text;
     public:
-        Book(int bookID, std::string title, Author author, Genre genre);
+        Book(int bookID, std::string title, Author author, Genre genre, std::string text);
 
         int GetBookID();
 
         Genre GetGenre();
-
+        std::string GetText();
         crow::json::wvalue ToJson();
-        
+        crow::json::wvalue ToJsonWithText();
 };
 
