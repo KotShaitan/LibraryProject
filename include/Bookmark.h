@@ -7,11 +7,12 @@
 class Bookmark {
     private:
         std::vector<Book> Books;
+
     public:
         Bookmark();
         void AddToBookmark(int ID);
         void RemoveFromBookmark(int ID);
-        void RecomendBook(); 
+        std::optional<Book> RecomendBook(); 
         Book RecomendBookAlg();
         crow::json::wvalue GetBooksAsJson();
         

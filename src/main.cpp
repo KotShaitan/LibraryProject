@@ -52,7 +52,8 @@ int main() {
     
     CROW_ROUTE(app, "/bookmark").methods("GET"_method)([&user1](){
         crow::json::wvalue result;
-        result = user1.GetBooksAsJson;
+        auto book = user1.RecomendBook();
+        result = book->ToJson();
         return crow::response{result};
     });
 

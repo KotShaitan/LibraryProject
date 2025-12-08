@@ -24,12 +24,11 @@ void Bookmark::RemoveFromBookmark(int ID) {
     }
 }
 
-void Bookmark::RecomendBook() {
+std::optional<Book> Bookmark::RecomendBook() {
     if (Books.empty()) {
-        return;
+        return std::nullopt;
     }
-    else RecomendBookAlg();
-
+    return RecomendBookAlg();
 }
 
 Book Bookmark::RecomendBookAlg() {
@@ -58,9 +57,8 @@ Book Bookmark::RecomendBookAlg() {
         }
     }
     
-    if (maxFrequency == 0) {
-        return Storage::GetBookByID(1);
-    }
+    
+    
     
     for (auto& book : Storage::GetListOfBooks()) {
         if (book.GetGenre().GetName() == mostFrequentGenre) {
@@ -73,6 +71,7 @@ Book Bookmark::RecomendBookAlg() {
         return Storage::GetListOfBooks()[0];
     }
     
+    return Storage::GetBookByID(1);
 }
 
 crow::json::wvalue Bookmark::GetBooksAsJson() {

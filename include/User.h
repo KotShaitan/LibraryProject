@@ -17,6 +17,6 @@ class User {
 
         void RemoveFromBookmark(int ID);
 
-        void RecomendBook();
+        std::optional<Book> RecomendBook();
         crow::json::wvalue GetBooksAsJson();
 };
