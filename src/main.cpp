@@ -117,8 +117,6 @@ int main() {
         return crow::response{200, response};
     });  
     
-
-    
     CROW_ROUTE(app, "/admin/add").methods("POST"_method)  ([&admin](const crow::request& req){
         auto json = crow::json::load(req.body);
         
