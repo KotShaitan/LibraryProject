@@ -50,6 +50,12 @@ int main() {
         return crow::response{result};
     });
     
+    CROW_ROUTE(app, "/bookmark").methods("GET"_method)([&user1](){
+        crow::json::wvalue result;
+        result = user1.GetBooksAsJson;
+        return crow::response{result};
+    });
+
     
     app.port(8080).run();
     
