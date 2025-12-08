@@ -24,6 +24,63 @@ void Bookmark::RemoveFromBookmark(int ID) {
     }
 }
 
-Book Bookmark::RecomendBook() {
-    return Books[0];
+void Bookmark::RecomendBook() {
+    if (Books.empty()) {
+        return;
+    }
+    else RecomendBookAlg();
+
+}
+
+Book Bookmark::RecomendBookAlg() {
+    if (Books.size() == 1) {
+        for (auto i : Storage::GetListOfBooks()) {
+            if (i.GetGenre().GetName() == Books[0].GetGenre().GetName()) {
+                return i;
+            }
+        }
+    }
+    
+    std::unordered_map<std::string, int> genreFrequency;
+    
+    for (auto book : Books) {
+        std::string genreName = book.GetGenre().GetName();
+        genreFrequency[genreName]++;
+    }
+    
+    std::string mostFrequentGenre;
+    int maxFrequency = 0;
+    
+    for (const auto& [genreName, frequency] : genreFrequency) {
+        if (frequency > maxFrequency) {
+            maxFrequency = frequency;
+            mostFrequentGenre = genreName;
+        }
+    }
+    
+    if (maxFrequency == 0) {
+        return Storage::GetBookByID(1);
+    }
+    
+    for (auto& book : Storage::GetListOfBooks()) {
+        if (book.GetGenre().GetName() == mostFrequentGenre) {
+            return book;
+        }
+    }
+    
+    
+    if (!Storage::GetListOfBooks().empty()) {
+        return Storage::GetListOfBooks()[0];
+    }
+    
+}
+
+crow::json::wvalue Bookmark::GetBooksAsJson() {
+    crow::json::wvalue result;
+    
+    for (size_t i = 0; i < Books.size(); ++i) {
+        result[i] = Books[i].ToJson();
+    }
+    
+    return result;
 }

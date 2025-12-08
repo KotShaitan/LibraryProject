@@ -11,6 +11,9 @@ class Bookmark {
         Bookmark();
         void AddToBookmark(int ID);
         void RemoveFromBookmark(int ID);
-        Book RecomendBook();
+        void RecomendBook(); 
+        Book RecomendBookAlg();
+        crow::json::wvalue GetBooksAsJson();
+        
         
 };
