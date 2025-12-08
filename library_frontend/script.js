@@ -256,7 +256,7 @@ function filterBooks() {
 }
 
 async function handleAddBook(e) {
-    e.preventDefault();
+    e.preventDefault(); 
     
     const newBook = {
         bookID: mockBooks.length + 1,

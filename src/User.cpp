@@ -11,6 +11,10 @@ User::User(std::string login, std::string password) : Login(login), Password(pas
 void User::AddToBookmark(int ID) {
     bookmark.AddToBookmark(ID);
 }
+
+crow::json::wvalue User::GetBooksAsJson() {
+    return bookmark.GetBooksAsJson();
+}
     
 void User::RemoveFromBookmark(int ID) {
     bookmark.RemoveFromBookmark(ID); 

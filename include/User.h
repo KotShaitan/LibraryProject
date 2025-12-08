@@ -17,4 +17,5 @@ class User {
 
         void RemoveFromBookmark(int ID);
 
+        crow::json::wvalue GetBooksAsJson();
 };

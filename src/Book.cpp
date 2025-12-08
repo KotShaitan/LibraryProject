@@ -12,3 +12,11 @@ int Book::GetBookID() {
 Genre Book::GetGenre() {
     return genre;
 }
+
+crow::json::wvalue Book::ToJson() {
+    crow::json::wvalue result;
+    result["bookname"] = title;
+    result["author"] = author.ToJson();  // Вложенный объект author
+    result["genre"] = genre.ToJson();    // Вложенный объект genre
+    return result;
+}

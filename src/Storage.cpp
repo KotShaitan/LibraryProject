@@ -19,7 +19,7 @@ Book Storage::GetBookByID(int ID) {
 
 }
 
-std::vector<Book> Storage::GetListOfBook() {
+std::vector<Book> Storage::GetListOfBooks() {
     return Books;
 }
 
@@ -36,4 +36,14 @@ void Storage::RemoveBook(int ID) {
     if (it != Books.end()) {
             Books.erase(it);
     }
+}
+
+crow::json::wvalue Storage::GetBooksAsJson() {
+    crow::json::wvalue result;
+    
+    for (size_t i = 0; i < Books.size(); ++i) {
+        result[i] = Books[i].ToJson();
+    }
+    
+    return result;
 }

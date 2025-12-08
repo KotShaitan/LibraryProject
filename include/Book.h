@@ -2,6 +2,7 @@
 #include "Genre.h"
 #include "Author.h"
 #include <string>
+#include "crow.h"
 class Book {
     private: 
         int bookID;
@@ -14,5 +15,8 @@ class Book {
         int GetBookID();
 
         Genre GetGenre();
+
+        crow::json::wvalue ToJson();
+        
 };
 

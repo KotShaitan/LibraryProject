@@ -23,10 +23,9 @@ int main() {
     Author author1("Lev", "Tolstiy", "");
     authors.push_back(author1);
 
-    static Storage storage;
     Book book(1, "War and Piece", authors[0], novel);
 
-    storage.AddBook(book);
+    Storage::AddBook(book);
 
     User user1("1234", "1234");
     Admin admin("1234", "1234");
@@ -35,19 +34,22 @@ int main() {
 
     CROW_ROUTE(app, "/home").methods("GET"_method)([](){
         crow::json::wvalue result;
-        result = storage.GetListOfBook();
+        result = Storage::GetBooksAsJson();
         return crow::response{result};
     });
-
+    
     CROW_ROUTE(app, "/home/book/<int>").methods("GET"_method)([](int id){
         crow::json::wvalue result;
+        result = Storage::GetBookByID(id).ToJson();
         return crow::response{result};
     });
 
-    CROW_ROUTE(app, "/bookmark").methods("GET"_method)([](){
+    CROW_ROUTE(app, "/bookmark").methods("GET"_method)([&user1](){
         crow::json::wvalue result;
+        result = user1.GetBooksAsJson();
         return crow::response{result};
     });
+    
     
     app.port(8080).run();
     
