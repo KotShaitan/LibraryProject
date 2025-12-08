@@ -1,0 +1,25 @@
+#include "User.h"
+#include "Book.h"
+#include "Author.h"
+#include "Genre.h"
+#include "Bookmark.h"
+#include <string>
+#include <vector>
+
+User::User(std::string login, std::string password) : Login(login), Password(password) { Bookmark userbookmark{};}
+
+void User::AddToBookmark(int ID) {
+    bookmark.AddToBookmark(ID);
+}
+
+std::optional<Book> User::RecomendBook() {
+    return bookmark.RecomendBook();
+}
+
+crow::json::wvalue User::GetBooksAsJson() {
+    return bookmark.GetBooksAsJson();
+}
+    
+void User::RemoveFromBookmark(int ID) {
+    bookmark.RemoveFromBookmark(ID); 
+}

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Библиотека - Админ-панель</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-book"></i>
+                <span>Библиотека - Админ</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Главная</a></li>
+                <li><a href="bookmark.html"><i class="fas fa-bookmark"></i> Закладки</a></li>
+                <li><a href="admin.html" class="active"><i class="fas fa-user-cog"></i> Админ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1><i class="fas fa-user-shield"></i> Административная панель</h1>
+            
+            <div class="admin-actions">
+                <button class="btn btn-primary" onclick="openAddBookModal()">
+                    <i class="fas fa-plus"></i> Добавить книгу
+                </button>
+                <button class="btn" onclick="refreshBooks()">
+                    <i class="fas fa-sync-alt"></i> Обновить список
+                </button>
+            </div>
+            
+            <div class="books-list-admin">
+            </div>
+        </div>
+    </main>
+
+    <div id="addBookModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-plus-circle"></i> Добавить новую книгу</h2>
+            <form id="addBookForm">
+                <div class="form-group">
+                    <label for="bookTitle">Название книги:</label>
+                    <input type="text" id="bookTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="authorName">Имя автора:</label>
+                    <input type="text" id="authorName" required>
+                </div>
+                <div class="form-group">
+                    <label for="authorLname">Фамилия автора:</label>
+                    <input type="text" id="authorLname" required>
+                </div>
+                <div class="form-group">
+                    <label for="authorPatronymic">Отчество автора:</label>
+                    <input type="text" id="authorPatronymic">
+                </div>
+                <div class="form-group">
+                    <label for="bookGenre">Жанр:</label>
+                    <input type="text" id="bookGenre" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookDescription">Описание:</label>
+                    <textarea id="bookDescription" rows="4"></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Добавить книгу</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        function openAddBookModal() {
+            document.getElementById('addBookModal').style.display = 'flex';
+        }
+        
+        function refreshBooks() {
+            renderAdminBooksList();
+            showNotification('Список книг обновлен', 'info');
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            setupAdminPage();
+
+            const addBookModal = document.getElementById('addBookModal');
+            const closeModal = document.querySelector('.close');
+            const addBookForm = document.getElementById('addBookForm');
+            
+            if (closeModal) {
+                closeModal.addEventListener('click', () => {
+                    addBookModal.style.display = 'none';
+                });
+            }
+            
+            window.addEventListener('click', (e) => {
+                if (e.target === addBookModal) {
+                    addBookModal.style.display = 'none';
+                }
+            });
+            
+            if (addBookForm) {
+                addBookForm.addEventListener('submit', handleAddBook);
+            }
+        });
+    </script>
+</body>
+</html>

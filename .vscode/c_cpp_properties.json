@@ -3,11 +3,11 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/include",
-                "${workspaceFolder}/include/asio/include",
+                "${workspaceFolder}/backend/include",
+                "${workspaceFolder}/backend/include/asio/include",
                 "${workspaceFolder}/**",
-                "C:/Users/kot_shaitan/Desktop/Library_CC/include",
-                "C:/Users/kot_shaitan/Desktop/Library_CC/include"
+                "C:/Users/kot_shaitan/Desktop/Library_CC/backend/include",
+                "C:/Users/kot_shaitan/Desktop/Library_CC/backend/include"
             ],
             "defines": [
                 "_DEBUG",
