@@ -8,7 +8,7 @@ Author::Author(std::string name,
     crow::json::wvalue Author::ToJson() {
     crow::json::wvalue result;
     result["name"] = name;
-    result["last_name"] = last_name;
+    result["lname"] = last_name;
     result["patronymic"] = patronymic;
     return result;
 }

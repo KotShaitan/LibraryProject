@@ -15,16 +15,18 @@ Genre Book::GetGenre() {
 
 crow::json::wvalue Book::ToJsonWithText() {
     crow::json::wvalue result;
-    result["bookname"] = title;
+    result["bookID"] = bookID;
+    result["title"] = title;
     result["author"] = author.ToJson();  // Вложенный объект author
     result["genre"] = genre.ToJson();  
-    result["text"] = text;  // Вложенный объект genre
+    result["fullText"] = text;  // Вложенный объект genre
     return result;
 }
 
 crow::json::wvalue Book::ToJson() {
     crow::json::wvalue result;
-    result["bookname"] = title;
+    result["bookID"] = bookID;
+    result["title"] = title;
     result["author"] = author.ToJson();  // Вложенный объект author
     result["genre"] = genre.ToJson();  
     // Вложенный объект genre
