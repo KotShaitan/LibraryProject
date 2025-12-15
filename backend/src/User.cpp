@@ -12,8 +12,8 @@ void User::AddToBookmark(int ID) {
     bookmark.AddToBookmark(ID);
 }
 
-std::optional<Book> User::RecomendBook() {
-    return bookmark.RecomendBook();
+std::optional<Book> User::RecommendBook() {
+    return bookmark.RecommendBook();
 }
 
 crow::json::wvalue User::GetBooksAsJson() {

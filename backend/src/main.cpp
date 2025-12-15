@@ -56,7 +56,48 @@ int main() {
 
     Book book(1, "War and Piece", authors[0], novel, "Lorem");
     Book book2(2, "War", authors[1], ballad, "Lorem1");
+    Book book3(3, "Anna Karenina", authors[0], novel, "Tragic love story in 19th century Russia");
+    Book book4(4, "The Death of Ivan Ilyich", authors[0], novel, "Novella about mortality and meaning of life");
+    Book book5(5, "Resurrection", authors[0], novel, "Social critique and spiritual awakening");
+    Book book6(6, "Hadji Murat", authors[0], novel, "Historical novella about Caucasian resistance");
+    Book book7(7, "Childhood", authors[0], novel, "First part of autobiographical trilogy");
+    Book book8(8, "Sevastopol Sketches", authors[0], genres[0], "War stories based on Crimean War");
+    Book book9(9, "The Kreutzer Sonata", authors[0], novel, "Novella about jealousy and marriage");
 
+    // Если нужны книги других жанров и авторов
+    Genre drama("Drama");
+    Genre poetry("Poetry");
+    Genre history("Historical");
+    genres.push_back(drama);
+    genres.push_back(poetry);
+    genres.push_back(history);
+
+    Author author3("Fyodor", "Dostoevsky", "");
+    Author author4("Anton", "Chekhov", "");
+    Author author5("Alexander", "Pushkin", "");
+    authors.push_back(author3);
+    authors.push_back(author4);
+    authors.push_back(author5);
+
+    Book book10(10, "Crime and Punishment", author3, drama, "Psychological drama about guilt and redemption");
+    Book book11(11, "The Brothers Karamazov", author3, novel, "Philosophical novel exploring faith and doubt");
+    Book book12(12, "The Seagull", author4, drama, "Play about art, love, and the creative process");
+    Book book13(13, "Eugene Onegin", author5, poetry, "Novel in verse about love and society");
+    Book book14(14, "The Queen of Spades", author5, novel, "Gothic short story about obsession");
+
+    // Добавляем все книги в хранилище
+    Storage::AddBook(book3);
+    Storage::AddBook(book4);
+    Storage::AddBook(book5);
+    Storage::AddBook(book6);
+    Storage::AddBook(book7);
+    Storage::AddBook(book8);
+    Storage::AddBook(book9);
+    Storage::AddBook(book10);
+    Storage::AddBook(book11);
+    Storage::AddBook(book12);
+    Storage::AddBook(book13);
+    Storage::AddBook(book14);
     Storage::AddBook(book);
     Storage::AddBook(book2);
 
@@ -118,7 +159,7 @@ int main() {
     });
 
     CROW_ROUTE(app, "/api/recommend").methods("GET"_method)([&user1]() {
-        auto book = user1.RecomendBook();
+        auto book = user1.RecommendBook();
         crow::json::wvalue result;
         if (book.has_value()) {
         // Книга есть - преобразуем в JSON

@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <unordered_set>
 
 Bookmark::Bookmark(){};
 
@@ -24,22 +25,24 @@ void Bookmark::RemoveFromBookmark(int ID) {
     }
 }
 
-std::optional<Book> Bookmark::RecomendBook() {
+std::optional<Book> Bookmark::RecommendBook() {
     if (Books.empty()) {
         return std::nullopt;
     }
-    return RecomendBookAlg();
+    return RecommendBookAlg();
 }
 
-Book Bookmark::RecomendBookAlg() {
-    if (Books.size() == 1) {
-        for (auto i : Storage::GetListOfBooks()) {
-            if (i.GetGenre().GetName() == Books[0].GetGenre().GetName()) {
-                return i;
-            }
-        }
+Book Bookmark::RecommendBookAlg() {
+    // Получаем все доступные книги
+    auto allBooks = Storage::GetListOfBooks();
+    
+    // Собираем ID книг, которые уже в закладках (не рекомендуем их)
+    std::unordered_set<int> bookmarkedIds;
+    for (auto book : Books) {
+        bookmarkedIds.insert(book.GetBookID());
     }
     
+    // Собираем статистику по жанрам из закладок
     std::unordered_map<std::string, int> genreFrequency;
     
     for (auto book : Books) {
@@ -47,6 +50,7 @@ Book Bookmark::RecomendBookAlg() {
         genreFrequency[genreName]++;
     }
     
+    // Находим самый популярный жанр
     std::string mostFrequentGenre;
     int maxFrequency = 0;
     
@@ -57,20 +61,32 @@ Book Bookmark::RecomendBookAlg() {
         }
     }
     
-    for (auto& book : Storage::GetListOfBooks()) {
-        if (book.GetGenre().GetName() == mostFrequentGenre) {
+    // Если нашли самый популярный жанр
+    if (!mostFrequentGenre.empty()) {
+        // Ищем книгу в этом жанре, которой нет в закладках
+        for (auto book : allBooks) {
+            if (book.GetGenre().GetName() == mostFrequentGenre && 
+                bookmarkedIds.find(book.GetBookID()) == bookmarkedIds.end()) {
+                return book;
+            }
+        }
+    }
+    
+    // Если не нашли в предпочитаемом жанре, ищем любую книгу не из закладок
+    for (auto book : allBooks) {
+        if (bookmarkedIds.find(book.GetBookID()) == bookmarkedIds.end()) {
             return book;
         }
     }
     
-    
-    if (!Storage::GetListOfBooks().empty()) {
-        return Storage::GetListOfBooks()[0];
+    // Если все книги уже в закладках, возвращаем первую из всех
+    if (!allBooks.empty()) {
+        return allBooks[0];
     }
     
+    // Фолбэк
     return Storage::GetBookByID(1);
 }
-
 crow::json::wvalue Bookmark::GetBooksAsJson() {
     crow::json::wvalue result;
     
