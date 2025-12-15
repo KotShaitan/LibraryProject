@@ -1,386 +1,160 @@
-const API_BASE_URL = 'http://localhost:8080';
+// Основные глобальные переменные
+let currentBooks = [];
+let allGenres = new Set();
 
-let mockBooks = [
-    {
-        bookID: 1,
-        title: "Война и мир",
-        author: {
-            name: "Лев",
-            lname: "Толстой",
-            patronymic: "Николаевич"
-        },
-        genre: {
-            name: "Роман"
-        },
-        description: "Великий роман о судьбах людей в эпоху наполеоновских войн.",
-        fullText: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+let bookmarkedBookIds = new Set();
 
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-
-Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.`
-    },
-    {
-        bookID: 2,
-        title: "Преступление и наказание",
-        author: {
-            name: "Фёдор",
-            lname: "Достоевский",
-            patronymic: "Михайлович"
-        },
-        genre: {
-            name: "Роман"
-        },
-        description: "Психологический роман о преступлении и моральных муках.",
-        fullText: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus.
-
-Phasellus pharetra nulla ac diam. Quisque semper justo at risus. Donec venenatis, turpis vel hendrerit interdum, dui ligula ultricies purus, sed posuere libero dui id orci.
-
-Nam congue, pede vitae dapibus aliquet, elit magna vulputate arcu, vel tempus metus leo non est. Etiam sit amet lectus quis est congue mollis.
-
-Phasellus congue lacus eget neque. Phasellus ornare, ante vitae consectetuer consequat, purus sapien ultricies dolor, et mollis pede metus eget nisi.`
-    },
-    {
-        bookID: 3,
-        title: "Мастер и Маргарита",
-        author: {
-            name: "Михаил",
-            lname: "Булгаков",
-            patronymic: "Афанасьевич"
-        },
-        genre: {
-            name: "Фэнтези"
-        },
-        description: "Мистический роман о дьяволе, посетившем Москву 1930-х годов.",
-        fullText: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi.
-
-Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa.
-
-Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
-
-Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor.`
-    },
-    {
-        bookID: 4,
-        title: "1984",
-        author: {
-            name: "Джордж",
-            lname: "Оруэлл",
-            patronymic: ""
-        },
-        genre: {
-            name: "Антиутопия"
-        },
-        description: "Роман-антиутопия о тоталитарном обществе будущего.",
-        fullText: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed odio dui. Nulla vitae elit libero, a pharetra augue.
-
-Nullam id dolor id nibh ultricies vehicula ut id elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
-
-Cras mattis consectetur purus sit amet fermentum. Etiam porta sem malesuada magna mollis euismod. Aenean lacinia bibendum nulla sed consectetur.
-
-Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`
-    },
-    {
-        bookID: 5,
-        title: "Гарри Поттер и философский камень",
-        author: {
-            name: "Джоан",
-            lname: "Роулинг",
-            patronymic: ""
-        },
-        genre: {
-            name: "Фэнтези"
-        },
-        description: "Первая книга о юном волшебнике Гарри Поттере.",
-        fullText: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-
-Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.
-
-Curabitur blandit tempus porttitor. Nullam quis risus eget urna mollis ornare vel eu leo. Donec ullamcorper nulla non metus auctor fringilla.
-
-Maecenas sed diam eget risus varius blandit sit amet non magna. Nullam id dolor id nibh ultricies vehicula ut id elit.`
-    },
-
-    {
-        bookID: 6,
-        title: "Три мушкетера",
-        author: {
-            name: "Александр",
-            lname: "Дюма",
-            patronymic: ""
-        },
-        genre: {
-            name: "Приключения"
-        },
-        description: "Приключения гасконца д'Артаньяна в Париже.",
-        fullText: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent commodo cursus magna, vel scelerisque nisl consectetur.`
-    },
-    {
-        bookID: 7,
-        title: "Маленький принц",
-        author: {
-            name: "Антуан",
-            lname: "де Сент-Экзюпери",
-            patronymic: ""
-        },
-        genre: {
-            name: "Философская сказка"
-        },
-        description: "Философская сказка о маленьком принце с другой планеты.",
-        fullText: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean lacinia bibendum nulla sed consectetur.`
-    },
-    {
-        bookID: 8,
-        title: "Анна Каренина",
-        author: {
-            name: "Лев",
-            lname: "Толстой",
-            patronymic: "Николаевич"
-        },
-        genre: {
-            name: "Роман"
-        },
-        description: "Роман о трагической любви замужней женщины.",
-        fullText: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id elit non mi porta gravida at eget metus.`
+// Функция для загрузки ID книг в закладках
+async function loadBookmarkedIds() {
+    try {
+        const response = await fetch('/api/bookmark');
+        if (response.ok) {
+            const bookmarks = await response.json();
+            // Извлекаем только ID книг
+            bookmarkedBookIds = new Set(bookmarks.map(book => book.bookID));
+        }
+    } catch (error) {
+        console.error('Ошибка загрузки закладок для проверки:', error);
     }
-];
-
-let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-
-function getRecommendedBooks() {
-    const bookmarkedIds = bookmarks.map(b => b.bookID);
-    return mockBooks
-        .filter(book => !bookmarkedIds.includes(book.bookID))
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 3); 
 }
 
+// DOM элементы
 const booksContainer = document.getElementById('booksContainer');
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
 const genreFilter = document.getElementById('genreFilter');
 const sortSelect = document.getElementById('sortSelect');
-const addBookModal = document.getElementById('addBookModal');
-const addBookForm = document.getElementById('addBookForm');
-const closeModal = document.querySelector('.close');
 
+// Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
-    loadBooks();
-    populateGenres();
-    
-    if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
-        setupHomePage();
-    } else if (window.location.pathname.includes('bookmark.html')) {
-        setupBookmarksPage();
-    } else if (window.location.pathname.includes('admin.html')) {
-        setupAdminPage();
-    }
+    initializePage();
 });
 
-function setupHomePage() {
-    searchBtn.addEventListener('click', filterBooks);
-    searchInput.addEventListener('input', filterBooks);
-    genreFilter.addEventListener('change', filterBooks);
-    sortSelect.addEventListener('change', filterBooks);
-
-    if (addBookForm) {
-        addBookForm.addEventListener('submit', handleAddBook);
-    }
-    
-    if (closeModal) {
-        closeModal.addEventListener('click', () => {
-            addBookModal.style.display = 'none';
-        });
-    }
-    
-    window.addEventListener('click', (e) => {
-        if (e.target === addBookModal) {
-            addBookModal.style.display = 'none';
-        }
-    });
-}
-
-async function loadBooks() {
+// Инициализация страницы
+async function initializePage() {
     try {
-        const books = mockBooks;
-        renderBooks(books);
-    } catch (error) {
-        console.error('Ошибка загрузки книг:', error);
-        renderBooks(mockBooks);
-    }
-}
-
-function renderBooks(books) {
-    if (!booksContainer) return;
-    
-    booksContainer.innerHTML = '';
-    
-    books.forEach(book => {
-        const isBookmarked = bookmarks.some(b => b.bookID === book.bookID);
+        // Загружаем ID книг в закладках ПЕРЕД загрузкой страницы
+        await loadBookmarkedIds();
         
-        const bookCard = document.createElement('div');
-        bookCard.className = 'book-card';
-        bookCard.innerHTML = `
-            <div class="book-cover">
-                <i class="fas fa-book"></i>
-            </div>
-            <div class="book-info">
-                <h3 class="book-title">${book.title}</h3>
-                <p class="book-author">
-                    ${book.author.lname} ${book.author.name} ${book.author.patronymic}
-                </p>
-                <span class="book-genre">${book.genre.name}</span>
-                <p class="book-description">${book.description || ''}</p>
-                <div class="book-actions">
-                    <button class="btn btn-bookmark ${isBookmarked ? 'added' : ''}" 
-                            data-id="${book.bookID}">
-                        <i class="fas ${isBookmarked ? 'fa-check' : 'fa-bookmark'}"></i>
-                        ${isBookmarked ? 'В закладках' : 'В закладки'}
-                    </button>
-                    <button class="btn btn-read" onclick="openBookText(${book.bookID})">
-                        <i class="fas fa-book-open"></i> Читать
-                    </button>
-                </div>
-            </div>
-        `;
+        // Определяем текущую страницу
+        const path = window.location.pathname;
         
-        booksContainer.appendChild(bookCard);
-    });
-
-    document.querySelectorAll('.btn-bookmark').forEach(button => {
-        button.addEventListener('click', function() {
-            const bookId = parseInt(this.getAttribute('data-id'));
-            toggleBookmark(bookId);
-        });
-    });
-}
-
-function openBookText(bookId) {
-    const book = mockBooks.find(b => b.bookID === bookId);
-    if (book) {
-        showBookTextModal(book);
-    }
-}
-
-function showBookTextModal(book) {
-    const modal = document.createElement('div');
-    modal.className = 'modal book-text-modal';
-    modal.style.display = 'flex';
-    
-    modal.innerHTML = `
-        <div class="modal-content book-text-content">
-            <span class="close close-book-text">&times;</span>
-            <div class="book-text-header">
-                <h2><i class="fas fa-book-open"></i> ${book.title}</h2>
-                <p class="book-text-author">${book.author.lname} ${book.author.name} ${book.author.patronymic}</p>
-                <span class="book-text-genre">${book.genre.name}</span>
-            </div>
-            <div class="book-text-body">
-                <div class="book-text-container">
-                    ${book.fullText || 'Текст книги пока не добавлен.'}
-                </div>
-            </div>
-            <div class="book-text-actions">
-                <button class="btn btn-bookmark" onclick="toggleBookmarkFromModal(${book.bookID})">
-                    <i class="fas ${bookmarks.some(b => b.bookID === book.bookID) ? 'fa-check' : 'fa-bookmark'}"></i>
-                    ${bookmarks.some(b => b.bookID === book.bookID) ? 'В закладках' : 'Добавить в закладки'}
-                </button>
-                <button class="btn" onclick="closeBookTextModal()">
-                    <i class="fas fa-times"></i> Закрыть
-                </button>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-
-    modal.querySelector('.close-book-text').addEventListener('click', () => {
-        document.body.removeChild(modal);
-    });
-    
-
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            document.body.removeChild(modal);
-        }
-    });
-
-    document.addEventListener('keydown', function closeOnEscape(e) {
-        if (e.key === 'Escape') {
-            if (document.body.contains(modal)) {
-                document.body.removeChild(modal);
-            }
-            document.removeEventListener('keydown', closeOnEscape);
-        }
-    });
-}
-
-function closeBookTextModal() {
-    const modal = document.querySelector('.book-text-modal');
-    if (modal) {
-        document.body.removeChild(modal);
-    }
-}
-
-function toggleBookmarkFromModal(bookId) {
-    toggleBookmark(bookId);
-
-    const modal = document.querySelector('.book-text-modal');
-    if (modal) {
-        const button = modal.querySelector('.btn-bookmark');
-        const isBookmarked = bookmarks.some(b => b.bookID === bookId);
-        
-        button.innerHTML = `
-            <i class="fas ${isBookmarked ? 'fa-check' : 'fa-bookmark'}"></i>
-            ${isBookmarked ? 'В закладках' : 'Добавить в закладки'}
-        `;
-        
-        if (isBookmarked) {
-            button.classList.add('added');
+        if (path === '/bookmark') {
+            await loadBookmarks();
+        } else if (path === '/admin') {
+            await loadAdminPage();
         } else {
-            button.classList.remove('added');
+            await loadHomePage();
+        }
+        
+        // Инициализируем общие обработчики событий
+        initializeEventHandlers();
+    } catch (error) {
+        console.error('Ошибка при инициализации страницы:', error);
+        showError('Произошла ошибка при загрузке данных');
+    }
+}
+// Загрузка главной страницы
+async function loadHomePage() {
+    try {
+        const response = await fetch('/api/home');
+        if (!response.ok) throw new Error('Ошибка загрузки книг');
+        
+        const books = await response.json();
+        currentBooks = books;
+        
+        // Извлекаем все жанры
+        updateGenresList(books);
+        
+        // Отображаем книги
+        displayBooks(books);
+        
+        // Если есть поисковая строка - настраиваем обработчики
+        if (searchInput && searchBtn) {
+            setupSearchHandlers();
+        }
+        
+    } catch (error) {
+        console.error('Ошибка загрузки главной страницы:', error);
+        showError('Не удалось загрузить книги');
+    }
+}
+
+// Загрузка страницы закладок
+async function loadBookmarks() {
+    try {
+        const response = await fetch('/api/bookmark');
+        if (!response.ok) throw new Error('Ошибка загрузки закладок');
+        
+        const bookmarks = await response.json();
+        
+        // Отображаем закладки
+        displayBookmarks(bookmarks);
+        
+        // Загружаем рекомендацию
+        await loadRecommendation();
+        
+    } catch (error) {
+        console.error('Ошибка загрузки закладок:', error);
+        showError('Не удалось загрузить закладки');
+    }
+}
+
+// Загрузка рекомендации
+async function loadRecommendation() {
+    try {
+        const response = await fetch('/api/recommend');
+        if (!response.ok) throw new Error('Ошибка загрузки рекомендации');
+        
+        const recommendation = await response.json();
+        
+        // Отображаем рекомендацию
+        displayRecommendation(recommendation);
+        
+    } catch (error) {
+        console.error('Ошибка загрузки рекомендации:', error);
+        // Скрываем блок рекомендаций при ошибке
+        const recommendedSection = document.querySelector('.recommended-section');
+        if (recommendedSection) {
+            recommendedSection.style.display = 'none';
         }
     }
 }
 
-async function toggleBookmark(bookId) {
-    const book = mockBooks.find(b => b.bookID === bookId);
-    const isBookmarked = bookmarks.some(b => b.bookID === bookId);
-    
-    if (isBookmarked) {
-        try {
-            bookmarks = bookmarks.filter(b => b.bookID !== bookId);
-            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-            showNotification('Книга удалена из закладок', 'info');
-        } catch (error) {
-            console.error('Ошибка удаления из закладок:', error);
-            showNotification('Ошибка удаления из закладок', 'error');
-        }
-    } else {
-        try {
-            bookmarks.push(book);
-            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-            showNotification('Книга добавлена в закладки', 'success');
-        } catch (error) {
-            console.error('Ошибка добавления в закладки:', error);
-            showNotification('Ошибка добавления в закладки', 'error');
-        }
-    }
-    
-    if (window.location.pathname.includes('bookmark.html')) {
-        renderBookmarks();
-    } else {
-        loadBooks();
+// Загрузка страницы администратора
+async function loadAdminPage() {
+    try {
+        const response = await fetch('/api/admin');
+        if (!response.ok) throw new Error('Ошибка загрузки книг для администрирования');
+        
+        const books = await response.json();
+        
+        // Отображаем книги в админке
+        displayAdminBooks(books);
+        
+        // Настраиваем обработчики для админки
+        setupAdminHandlers();
+        
+    } catch (error) {
+        console.error('Ошибка загрузки админ-страницы:', error);
+        showError('Не удалось загрузить данные для администрирования');
     }
 }
 
-function populateGenres() {
+// Обновление списка жанров
+function updateGenresList(books) {
     if (!genreFilter) return;
     
-    const genres = [...new Set(mockBooks.map(book => book.genre.name))];
+    allGenres.clear();
+    books.forEach(book => {
+        if (book.genre && book.genre.name) {
+            allGenres.add(book.genre.name);
+        }
+    });
     
-    genres.forEach(genre => {
+    // Очищаем и добавляем опции
+    genreFilter.innerHTML = '<option value="">Все жанры</option>';
+    allGenres.forEach(genre => {
         const option = document.createElement('option');
         option.value = genre;
         option.textContent = genre;
@@ -388,396 +162,779 @@ function populateGenres() {
     });
 }
 
-function filterBooks() {
-    let filteredBooks = [...mockBooks];
-
-    const searchTerm = searchInput.value.toLowerCase();
-    if (searchTerm) {
-        filteredBooks = filteredBooks.filter(book => 
-            book.title.toLowerCase().includes(searchTerm) ||
-            book.author.lname.toLowerCase().includes(searchTerm) ||
-            book.author.name.toLowerCase().includes(searchTerm) ||
-            book.genre.name.toLowerCase().includes(searchTerm) ||
-            (book.description && book.description.toLowerCase().includes(searchTerm))
-        );
-    }
-
-    const selectedGenre = genreFilter.value;
-    if (selectedGenre) {
-        filteredBooks = filteredBooks.filter(book => book.genre.name === selectedGenre);
-    }
-
-    const sortBy = sortSelect.value;
-    switch(sortBy) {
-        case 'title':
-            filteredBooks.sort((a, b) => a.title.localeCompare(b.title));
-            break;
-        case 'title_desc':
-            filteredBooks.sort((a, b) => b.title.localeCompare(a.title));
-            break;
-        case 'author':
-            filteredBooks.sort((a, b) => a.author.lname.localeCompare(b.author.lname));
-            break;
+// Отображение книг на главной странице
+function displayBooks(books) {
+    if (!booksContainer) return;
+    
+    if (books.length === 0) {
+        booksContainer.innerHTML = '<div class="empty-message"><p>Книги не найдены</p></div>';
+        return;
     }
     
-    renderBooks(filteredBooks);
-}
-
-async function handleAddBook(e) {
-    e.preventDefault(); 
+    booksContainer.innerHTML = '';
     
-    const newBook = {
-        bookID: mockBooks.length + 1,
-        title: document.getElementById('bookTitle').value,
-        author: {
-            name: document.getElementById('authorName').value,
-            lname: document.getElementById('authorLname').value,
-            patronymic: document.getElementById('authorPatronymic').value
-        },
-        genre: {
-            name: document.getElementById('bookGenre').value
-        },
-        description: document.getElementById('bookDescription').value || '',
-        fullText: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`
-    };
-    
-    try {
-        mockBooks.push(newBook);
-        addBookModal.style.display = 'none';
-        addBookForm.reset();
-        loadBooks();
-        populateGenres();
-        showNotification('Книга успешно добавлена', 'success');
-    } catch (error) {
-        console.error('Ошибка добавления книги:', error);
-        showNotification('Ошибка добавления книги', 'error');
-    }
+    books.forEach(book => {
+        const bookElement = createBookCard(book, 'home');
+        booksContainer.appendChild(bookElement);
+    });
 }
 
-function setupBookmarksPage() {
-    renderBookmarks();
-}
-
-function renderBookmarks() {
-    const container = document.querySelector('.bookmarks-container');
-    if (!container) return;
+// Отображение закладок
+function displayBookmarks(bookmarks) {
+    const bookmarksContainer = document.querySelector('.bookmarks-container');
+    if (!bookmarksContainer) return;
     
     if (bookmarks.length === 0) {
-        container.innerHTML = `
+        bookmarksContainer.innerHTML = `
             <div class="empty-bookmarks">
-                <i class="fas fa-bookmark fa-4x"></i>
+                <i class="fas fa-bookmark"></i>
                 <h3>Закладок пока нет</h3>
-                <p>Добавляйте книги в закладки на главной странице</p>
+                <p>Добавляйте книги в закладки, чтобы они отображались здесь</p>
+                <a href="/" class="btn btn-primary" style="margin-top: 20px;">
+                    <i class="fas fa-book"></i> Перейти к книгам
+                </a>
             </div>
         `;
-    } else {
-        container.innerHTML = '';
-        const bookmarksSection = document.createElement('div');
-        bookmarksSection.className = 'bookmarks-section';
-        bookmarksSection.innerHTML = `
-            <h2><i class="fas fa-bookmark"></i> Ваши закладки (${bookmarks.length})</h2>
-            <div class="bookmarks-grid">
-                ${bookmarks.map(book => `
-                    <div class="book-card">
-                        <div class="book-cover">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="book-info">
-                            <h3 class="book-title">${book.title}</h3>
-                            <p class="book-author">
-                                ${book.author.lname} ${book.author.name} ${book.author.patronymic}
-                            </p>
-                            <span class="book-genre">${book.genre.name}</span>
-                            <div class="book-actions">
-                                <button class="btn btn-read" onclick="openBookText(${book.bookID})">
-                                    <i class="fas fa-book-open"></i> Читать
-                                </button>
-                                <button class="btn btn-danger" onclick="removeFromBookmarks(${book.bookID})">
-                                    <i class="fas fa-trash"></i> Удалить
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-        
-        container.appendChild(bookmarksSection);
+        return;
     }
-
-    const recommendedBooks = getRecommendedBooks();
-    if (recommendedBooks.length > 0) {
-        const recommendedSection = document.createElement('div');
-        recommendedSection.className = 'recommended-section';
-        recommendedSection.innerHTML = `
-            <h2><i class="fas fa-star"></i> Рекомендуем к прочтению</h2>
-            <p class="recommended-description">Вам могут понравиться эти книги:</p>
-            <div class="recommended-grid">
-                ${recommendedBooks.map(book => `
-                    <div class="book-card recommended-card">
-                        <div class="book-cover">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="book-info">
-                            <h3 class="book-title">${book.title}</h3>
-                            <p class="book-author">
-                                ${book.author.lname} ${book.author.name} ${book.author.patronymic}
-                            </p>
-                            <span class="book-genre">${book.genre.name}</span>
-                            <p class="book-description">${book.description || ''}</p>
-                            <div class="book-actions">
-                                <button class="btn btn-bookmark" onclick="toggleBookmark(${book.bookID})">
-                                    <i class="fas fa-bookmark"></i> В закладки
-                                </button>
-                                <button class="btn btn-read" onclick="openBookText(${book.bookID})">
-                                    <i class="fas fa-book-open"></i> Читать
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-        
-        container.appendChild(recommendedSection);
-    }
-}
-
-function removeFromBookmarks(bookId) {
-    bookmarks = bookmarks.filter(b => b.bookID !== bookId);
-    localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-    renderBookmarks();
-    showNotification('Книга удалена из закладок', 'info');
-}
-
-function setupAdminPage() {
-    renderAdminBooksList();
     
+    // Создаем сетку для закладок
+    const bookmarksGrid = document.createElement('div');
+    bookmarksGrid.className = 'bookmarks-grid';
+    
+    bookmarks.forEach(book => {
+        const bookElement = createBookCard(book, 'bookmark');
+        bookmarksGrid.appendChild(bookElement);
+    });
+    
+    bookmarksContainer.innerHTML = `
+        <div class="bookmarks-section">
+            <h2><i class="fas fa-bookmark"></i> Книги в закладках (${bookmarks.length})</h2>
+        </div>
+    `;
+    bookmarksContainer.appendChild(bookmarksGrid);
+}
+
+// Отображение рекомендации
+function displayRecommendation(recommendation) {
+    const bookmarksContainer = document.querySelector('.bookmarks-container');
+    if (!bookmarksContainer) return;
+    
+    if (!recommendation || Object.keys(recommendation).length === 0) {
+        // Если нет рекомендации, просто выходим
+        return;
+    }
+    
+    // Создаем секцию для рекомендации
+    const recommendedSection = document.createElement('div');
+    recommendedSection.className = 'recommended-section';
+    
+    recommendedSection.innerHTML = `
+        <h2><i class="fas fa-star"></i> Рекомендуем к прочтению</h2>
+        <p class="recommended-description">На основе ваших закладок мы подобрали книгу, которая может вам понравиться</p>
+        <div class="recommended-grid"></div>
+    `;
+    
+    // Добавляем рекомендованную книгу
+    const recommendedGrid = recommendedSection.querySelector('.recommended-grid');
+    const bookElement = createBookCard(recommendation, 'recommendation');
+    recommendedGrid.appendChild(bookElement);
+    
+    // Вставляем рекомендацию перед закладками
+    const bookmarksSection = bookmarksContainer.querySelector('.bookmarks-section');
+    if (bookmarksSection) {
+        bookmarksContainer.insertBefore(recommendedSection, bookmarksSection);
+    } else {
+        bookmarksContainer.prepend(recommendedSection);
+    }
+}
+
+// Отображение книг в админке
+function displayAdminBooks(books) {
+    const booksListAdmin = document.querySelector('.books-list-admin');
+    if (!booksListAdmin) return;
+    
+    if (books.length === 0) {
+        booksListAdmin.innerHTML = '<p>Нет книг в библиотеке</p>';
+        return;
+    }
+    
+    let html = '';
+    books.forEach(book => {
+        const authorName = book.author ? 
+            `${book.author.lname || ''} ${book.author.name || ''} ${book.author.patronymic || ''}`.trim() 
+            : 'Неизвестный автор';
+        
+        html += `
+            <div class="book-item-admin" data-book-id="${book.bookID}">
+                <div class="book-info-admin">
+                    <h4>${book.title || 'Без названия'}</h4>
+                    <p><strong>Автор:</strong> ${authorName}</p>
+                    <p><strong>Жанр:</strong> ${book.genre?.name || 'Не указан'}</p>
+                    <p><strong>ID:</strong> ${book.bookID}</p>
+                </div>
+                <div class="admin-actions">
+                    <button class="btn btn-danger btn-remove-admin" data-book-id="${book.bookID}">
+                        <i class="fas fa-trash"></i> Удалить
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+    
+    booksListAdmin.innerHTML = html;
+}
+
+// Создание карточки книги
+function createBookCard(book, context = 'home') {
+    const card = document.createElement('div');
+    card.className = 'book-card';
+    if (context === 'recommendation') {
+        card.classList.add('recommended-card');
+    }
+    card.dataset.bookId = book.bookID;
+    
+    // Проверяем, находится ли книга в закладках
+    const isInBookmarks = bookmarkedBookIds.has(book.bookID);
+    
+    // Получаем полное имя автора
+    const authorFullName = getAuthorFullName(book.author);
+    
+    // Получаем первые несколько предложений текста для описания
+    const shortDescription = getShortDescription(book.fullText || '');
+    
+    // Определяем цвет обложки на основе жанра
+    const coverColor = getCoverColor(book.genre?.name || '');
+    
+    card.innerHTML = `
+        <div class="book-cover" style="background: ${coverColor};">
+            <i class="fas fa-book-open"></i>
+        </div>
+        <div class="book-info">
+            <h3 class="book-title">${book.title || 'Без названия'}</h3>
+            <p class="book-author"><i class="fas fa-user-pen"></i> ${authorFullName}</p>
+            <span class="book-genre">${book.genre?.name || 'Без жанра'}</span>
+            <p class="book-description">${shortDescription}</p>
+            <div class="book-actions">
+                ${context === 'bookmark' ? `
+                    <button class="btn btn-danger btn-remove-bookmark" data-book-id="${book.bookID}">
+                        <i class="fas fa-trash"></i> Удалить
+                    </button>
+                ` : `
+                    <button class="btn btn-bookmark btn-add-bookmark ${isInBookmarks ? 'added disabled' : ''}" 
+                            data-book-id="${book.bookID}"
+                            ${isInBookmarks ? 'disabled' : ''}>
+                        <i class="fas ${isInBookmarks ? 'fa-check' : 'fa-bookmark'}"></i> 
+                        ${isInBookmarks ? 'В закладках' : 'В закладки'}
+                    </button>
+                `}
+                <button class="btn btn-details btn-view-details" data-book-id="${book.bookID}">
+                    <i class="fas fa-book-open"></i> Читать
+                </button>
+            </div>
+        </div>
+    `;
+    
+    return card;
+}
+// Инициализация обработчиков событий
+function initializeEventHandlers() {
+    // Обработчики фильтров
+    if (genreFilter) {
+        genreFilter.addEventListener('change', handleFilterChange);
+    }
+    
+    if (sortSelect) {
+        sortSelect.addEventListener('change', handleSortChange);
+    }
+    
+    // Обработчики кнопок в карточках книг
     document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('btn-remove')) {
-            const bookId = parseInt(e.target.getAttribute('data-id'));
-            if (confirm('Вы уверены, что хотите удалить эту книгу?')) {
-                removeBook(bookId);
-            }
+        const target = e.target;
+        
+        // Добавление/удаление закладки
+        if (target.closest('.btn-add-bookmark')) {
+            const button = target.closest('.btn-add-bookmark');
+            const bookId = button.dataset.bookId;
+            addToBookmark(bookId);
+        }
+        
+        if (target.closest('.btn-remove-bookmark')) {
+            const button = target.closest('.btn-remove-bookmark');
+            const bookId = button.dataset.bookId;
+            removeFromBookmark(bookId);
+        }
+        
+        // Чтение книги
+        if (target.closest('.btn-view-details')) {
+            const button = target.closest('.btn-view-details');
+            const bookId = button.dataset.bookId;
+            viewBookDetails(bookId);
         }
     });
 }
 
-async function renderAdminBooksList() {
-    const container = document.querySelector('.books-list-admin');
-    if (!container) return;
+// Настройка обработчиков поиска
+function setupSearchHandlers() {
+    if (searchBtn) {
+        searchBtn.addEventListener('click', handleSearch);
+    }
     
-    try {
-        const books = mockBooks;
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleSearch();
+            }
+        });
+    }
+}
+
+// Настройка обработчиков для админки
+function setupAdminHandlers() {
+    // Обработчик кнопки "Добавить книгу"
+    const addBookBtn = document.getElementById('addBookBtn');
+    if (addBookBtn) {
+        addBookBtn.addEventListener('click', function() {
+            openAddBookModal();
+        });
+    }
+    
+    // Обработчик модального окна
+    const modal = document.getElementById('addBookModal');
+    const closeBtn = modal?.querySelector('.close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+    }
+    
+    // Закрытие модального окна при клике вне его
+    window.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+    
+    // Обработчик формы добавления книги
+    const addBookForm = document.getElementById('addBookForm');
+    if (addBookForm) {
+        addBookForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            addNewBook();
+        });
+    }
+    
+    // Обработчик удаления книг в админке
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.btn-remove-admin')) {
+            const button = e.target.closest('.btn-remove-admin');
+            const bookId = button.dataset.bookId;
+            removeBookAdmin(bookId);
+        }
+    });
+}
+
+// Обработчик поиска
+function handleSearch() {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    
+    if (searchTerm === '') {
+        displayBooks(currentBooks);
+        return;
+    }
+    
+    const filteredBooks = currentBooks.filter(book => {
+        const title = book.title?.toLowerCase() || '';
+        const author = getAuthorFullName(book.author).toLowerCase();
+        const genre = book.genre?.name?.toLowerCase() || '';
         
-        container.innerHTML = `
-            <h2>Управление книгами</h2>
-            ${books.map(book => `
-                <div class="book-item-admin">
-                    <div>
-                        <h4>${book.title}</h4>
-                        <p>${book.author.lname} ${book.author.name} - ${book.genre.name}</p>
-                        <small>${book.description || 'Без описания'}</small>
-                    </div>
-                    <button class="btn btn-danger btn-remove" data-id="${book.bookID}">
-                        <i class="fas fa-trash"></i> Удалить
-                    </button>
-                </div>
-            `).join('')}
-        `;
-    } catch (error) {
-        console.error('Ошибка загрузки книг для админа:', error);
-    }
+        return title.includes(searchTerm) || 
+               author.includes(searchTerm) || 
+               genre.includes(searchTerm);
+    });
+    
+    displayBooks(filteredBooks);
 }
 
-async function removeBook(bookId) {
+// Обработчик изменения фильтра по жанру
+function handleFilterChange() {
+    const selectedGenre = genreFilter.value;
+    
+    if (!selectedGenre) {
+        displayBooks(currentBooks);
+        return;
+    }
+    
+    const filteredBooks = currentBooks.filter(book => 
+        book.genre?.name === selectedGenre
+    );
+    
+    displayBooks(filteredBooks);
+}
+
+// Обработчик сортировки
+function handleSortChange() {
+    const sortBy = sortSelect.value;
+    let sortedBooks = [...currentBooks];
+    
+    switch (sortBy) {
+        case 'title':
+            sortedBooks.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+            break;
+        case 'title_desc':
+            sortedBooks.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
+            break;
+        case 'author':
+            sortedBooks.sort((a, b) => 
+                getAuthorFullName(a.author).localeCompare(getAuthorFullName(b.author))
+            );
+            break;
+    }
+    
+    displayBooks(sortedBooks);
+}
+
+// Добавление в закладки
+// Добавление в закладки
+async function addToBookmark(bookId) {
     try {
-        mockBooks = mockBooks.filter(book => book.bookID !== bookId);
-        bookmarks = bookmarks.filter(book => book.bookID !== bookId);
-        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-        renderAdminBooksList();
-        showNotification('Книга успешно удалена', 'success');
+        // Проверяем на клиенте
+        if (bookmarkedBookIds.has(parseInt(bookId))) {
+            showNotification('Книга уже в закладках', 'info');
+            // Обновляем все кнопки этой книги
+            updateBookmarkButtons(bookId, true);
+            return;
+        }
+        
+        const response = await fetch('/api/bookmark/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ bookID: parseInt(bookId) })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            if (response.status === 409) { // Конфликт - уже в закладках
+                showNotification('Книга уже в закладках', 'info');
+                // Обновляем локальное состояние
+                bookmarkedBookIds.add(parseInt(bookId));
+                // Обновляем все кнопки этой книги
+                updateBookmarkButtons(bookId, true);
+                return;
+            }
+            throw new Error(errorData.message || 'Ошибка добавления в закладки');
+        }
+        
+        // Добавляем ID книги в локальное множество
+        bookmarkedBookIds.add(parseInt(bookId));
+        
+        // Обновляем все кнопки этой книги на странице
+        updateBookmarkButtons(bookId, true);
+        
+        showNotification('Книга добавлена в закладки', 'success');
+        
     } catch (error) {
-        console.error('Ошибка удаления книги:', error);
-        showNotification('Ошибка удаления книги', 'error');
+        console.error('Ошибка добавления в закладки:', error);
+        showNotification(error.message || 'Не удалось добавить книгу в закладки', 'error');
     }
 }
-
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = `
-        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-        <span>${message}</span>
+// Удаление из закладок
+async function removeFromBookmark(bookId) {
+    try {
+        const response = await fetch('/api/bookmark/remove', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ bookID: parseInt(bookId) })
+        });
+        
+        if (!response.ok) throw new Error('Ошибка удаления из закладок');
+        
+        // Удаляем ID книги из локального множества
+        bookmarkedBookIds.delete(parseInt(bookId));
+        
+        // Если мы на странице закладок
+        if (window.location.pathname === '/bookmark') {
+            // Удаляем карточку из DOM
+            const card = document.querySelector(`.book-card[data-book-id="${bookId}"]`);
+            if (card) {
+                card.remove();
+            }
+            
+            // Проверяем, остались ли еще закладки
+            const remainingCards = document.querySelectorAll('.book-card');
+            if (remainingCards.length === 0) {
+                await loadBookmarks();
+            }
+        } else {
+            // На других страницах обновляем только кнопки
+            updateBookmarkButtons(bookId, false);
+        }
+        
+        showNotification('Книга удалена из закладок', 'success');
+        
+    } catch (error) {
+        console.error('Ошибка удаления из закладок:', error);
+        showNotification('Не удалось удалить книгу из закладок', 'error');
+    }
+}
+// Просмотр деталей книги
+async function viewBookDetails(bookId) {
+    try {
+        const response = await fetch(`/api/home/book/${bookId}/detail`);
+        if (!response.ok) throw new Error('Ошибка загрузки книги');
+        
+        const book = await response.json();
+        openBookTextModal(book);
+        
+    } catch (error) {
+        console.error('Ошибка загрузки книги:', error);
+        showNotification('Не удалось загрузить книгу', 'error');
+    }
+}
+function updateBookmarkButtons(bookId, isBookmarked) {
+    const buttons = document.querySelectorAll(`.btn-add-bookmark[data-book-id="${bookId}"]`);
+    buttons.forEach(button => {
+        if (isBookmarked) {
+            button.innerHTML = '<i class="fas fa-check"></i> В закладках';
+            button.classList.add('added', 'disabled');
+            button.disabled = true;
+        } else {
+            button.innerHTML = '<i class="fas fa-bookmark"></i> В закладки';
+            button.classList.remove('added', 'disabled');
+            button.disabled = false;
+        }
+    });
+}
+// Открытие модального окна с текстом книги
+// Открытие модального окна с текстом книги
+async function openBookTextModal(book) {
+    // Создаем модальное окно
+    const modal = document.createElement('div');
+    modal.className = 'modal book-text-modal';
+    modal.id = 'bookTextModal';
+    
+    const authorFullName = getAuthorFullName(book.author);
+    
+    // Проверяем, находится ли книга в закладках
+    const isInBookmarks = bookmarkedBookIds.has(book.bookID);
+    
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="book-text-header">
+                <h2>${book.title || 'Без названия'}</h2>
+                <p class="book-text-author"><i class="fas fa-user-pen"></i> ${authorFullName}</p>
+                <span class="book-text-genre">${book.genre?.name || 'Без жанра'}</span>
+            </div>
+            <div class="book-text-body">
+                <div class="book-text-container">${book.fullText || 'Текст книги отсутствует'}</div>
+            </div>
+            <div class="book-text-actions">
+                <button class="btn btn-bookmark btn-add-bookmark ${isInBookmarks ? 'added disabled' : ''}" 
+                        data-book-id="${book.bookID}"
+                        ${isInBookmarks ? 'disabled' : ''}>
+                    <i class="fas ${isInBookmarks ? 'fa-check' : 'fa-bookmark'}"></i> 
+                    ${isInBookmarks ? 'В закладках' : 'В закладки'}
+                </button>
+                <button class="btn btn-details close-text-modal">
+                    <i class="fas fa-times"></i> Закрыть
+                </button>
+            </div>
+        </div>
     `;
     
-    document.body.appendChild(notification);
+    document.body.appendChild(modal);
+    modal.style.display = 'flex';
     
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => {
-            if (notification.parentNode) {
-                document.body.removeChild(notification);
-            }
-        }, 300);
-    }, 3000);
+    // Обработчики для модального окна
+    const closeBtn = modal.querySelector('.close');
+    const closeTextBtn = modal.querySelector('.close-text-modal');
+    
+    closeBtn.onclick = () => modal.remove();
+    closeTextBtn.onclick = () => modal.remove();
+    
+    // Закрытие при клике вне модального окна
+    window.onclick = function(e) {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    };
+    
+    // Обработчик кнопки добавления в закладки в модальном окне
+    const bookmarkBtn = modal.querySelector('.btn-add-bookmark');
+    if (bookmarkBtn && !isInBookmarks) {
+        bookmarkBtn.onclick = async () => {
+            await addToBookmark(book.bookID);
+        };
+    }
+}
+// Открытие модального окна добавления книги
+function openAddBookModal() {
+    const modal = document.getElementById('addBookModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
 }
 
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
+// Добавление новой книги
+async function addNewBook() {
+    try {
+        const title = document.getElementById('bookTitle').value;
+        const authorName = document.getElementById('authorName').value;
+        const authorLname = document.getElementById('authorLname').value;
+        const authorPatronymic = document.getElementById('authorPatronymic').value;
+        const genre = document.getElementById('bookGenre').value;
+        const fullText = document.getElementById('bookDescription').value || 'Текст книги отсутствует';
+        
+        if (!title || !authorName || !authorLname || !genre) {
+            showNotification('Заполните все обязательные поля', 'error');
+            return;
+        }
+        
+        const bookData = {
+            title: title,
+            author: {
+                name: authorName,
+                lname: authorLname,
+                patronymic: authorPatronymic
+            },
+            genre: genre,
+            fullText: fullText
+        };
+        
+        const response = await fetch('/api/admin/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(bookData)
+        });
+        
+        if (!response.ok) throw new Error('Ошибка добавления книги');
+        
+        // Закрываем модальное окно
+        const modal = document.getElementById('addBookModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+        
+        // Очищаем форму
+        document.getElementById('addBookForm').reset();
+        
+        // Перезагружаем список книг
+        await loadAdminPage();
+        
+        showNotification('Книга успешно добавлена', 'success');
+        
+    } catch (error) {
+        console.error('Ошибка добавления книги:', error);
+        showNotification('Не удалось добавить книгу', 'error');
+    }
+}
+
+// Удаление книги в админке
+async function removeBookAdmin(bookId) {
+    if (!confirm('Вы уверены, что хотите удалить эту книгу?')) {
+        return;
     }
     
-    @keyframes slideOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
+    try {
+        const response = await fetch('/api/admin/remove', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ bookID: parseInt(bookId) })
+        });
+        
+        if (!response.ok) throw new Error('Ошибка удаления книги');
+        
+        // Удаляем книгу из DOM
+        const bookItem = document.querySelector(`.book-item-admin[data-book-id="${bookId}"]`);
+        if (bookItem) {
+            bookItem.remove();
+        }
+        
+        // Проверяем, остались ли еще книги
+        const remainingBooks = document.querySelectorAll('.book-item-admin');
+        if (remainingBooks.length === 0) {
+            const booksListAdmin = document.querySelector('.books-list-admin');
+            if (booksListAdmin) {
+                booksListAdmin.innerHTML = '<p>Нет книг в библиотеке</p>';
+            }
+        }
+        
+        showNotification('Книга успешно удалена', 'success');
+        
+    } catch (error) {
+        console.error('Ошибка удаления книги:', error);
+        showNotification('Не удалось удалить книгу', 'error');
+    }
+}
+
+// Вспомогательные функции
+
+// Получение полного имени автора
+function getAuthorFullName(author) {
+    if (!author) return 'Неизвестный автор';
+    
+    const parts = [];
+    if (author.lname) parts.push(author.lname);
+    if (author.name) parts.push(author.name);
+    if (author.patronymic) parts.push(author.patronymic);
+    
+    return parts.join(' ') || 'Неизвестный автор';
+}
+
+// Получение краткого описания
+function getShortDescription(text, maxLength = 100) {
+    if (!text || text === 'Текст книги отсутствует') {
+        return 'Описание отсутствует';
     }
     
-    .notification {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 25px;
-        border-radius: 8px;
+    // Убираем лишние пробелы и переносы строк
+    const cleanText = text.replace(/\s+/g, ' ').trim();
+    
+    if (cleanText.length <= maxLength) {
+        return cleanText;
+    }
+    
+    // Ищем конец предложения
+    const shortened = cleanText.substring(0, maxLength);
+    const lastSpace = shortened.lastIndexOf(' ');
+    const lastDot = Math.max(shortened.lastIndexOf('.'), shortened.lastIndexOf('!'), shortened.lastIndexOf('?'));
+    
+    const cutIndex = Math.max(lastDot > 0 ? lastDot + 1 : lastSpace);
+    
+    return cutIndex > 0 ? shortened.substring(0, cutIndex) + '...' : shortened + '...';
+}
+
+// Получение цвета обложки на основе жанра
+function getCoverColor(genre) {
+    const colors = {
+        'Роман': 'linear-gradient(135deg, #3498db, #2ecc71)',
+        'Фантастика': 'linear-gradient(135deg, #9b59b6, #3498db)',
+        'Детектив': 'linear-gradient(135deg, #e74c3c, #f39c12)',
+        'Поэзия': 'linear-gradient(135deg, #2ecc71, #3498db)',
+        'Драма': 'linear-gradient(135deg, #f1c40f, #e67e22)',
+        'Классика': 'linear-gradient(135deg, #34495e, #2c3e50)'
+    };
+    
+    return colors[genre] || 'linear-gradient(135deg, #3498db, #2ecc71)';
+}
+
+// Показ уведомления
+function showNotification(message, type = 'info') {
+    // Проверяем, есть ли уже контейнер для уведомлений
+    let container = document.getElementById('notification-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'notification-container';
+        container.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 300px;
+        `;
+        document.body.appendChild(container);
+    }
+    
+    // Создаем уведомление
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        background-color: ${type === 'success' ? '#2ecc71' : type === 'error' ? '#e74c3c' : '#3498db'};
         color: white;
-        font-weight: bold;
-        z-index: 2000;
-        animation: slideIn 0.3s ease;
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        animation: slideIn 0.3s ease-out;
         display: flex;
         align-items: center;
         gap: 10px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
+    `;
     
-    .notification.success {
-        background-color: #2ecc71;
-        border-left: 4px solid #27ae60;
-    }
+    const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
     
-    .notification.error {
-        background-color: #e74c3c;
-        border-left: 4px solid #c0392b;
-    }
+    notification.innerHTML = `
+        <i class="fas ${icon}"></i>
+        <span>${message}</span>
+    `;
     
-    .notification.info {
-        background-color: #3498db;
-        border-left: 4px solid #2980b9;
-    }
+    container.appendChild(notification);
     
-    .book-text-modal .modal-content {
-        max-width: 800px;
-        max-height: 90vh;
-        display: flex;
-        flex-direction: column;
-    }
+    // Удаляем уведомление через 3 секунды
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }, 3000);
     
-    .book-text-header {
-        margin-bottom: 20px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #eee;
+    // Добавляем анимации в стили
+    if (!document.getElementById('notification-styles')) {
+        const style = document.createElement('style');
+        style.id = 'notification-styles';
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
     }
-    
-    .book-text-author {
-        color: #7f8c8d;
-        margin: 5px 0;
-    }
-    
-    .book-text-genre {
-        display: inline-block;
-        background-color: #e8f4fc;
-        color: #3498db;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.9rem;
-    }
-    
-    .book-text-body {
-        flex: 1;
-        overflow-y: auto;
-        margin: 15px 0;
-        padding: 10px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        line-height: 1.8;
-        font-size: 1.05rem;
-        color: #333;
-    }
-    
-    .book-text-container {
-        white-space: pre-wrap;
-        font-family: 'Georgia', serif;
-    }
-    
-    .book-text-actions {
-        display: flex;
-        gap: 15px;
-        padding-top: 15px;
-        border-top: 1px solid #eee;
-    }
-    
-    .btn-read {
-        background-color: #9b59b6;
-        color: white;
-        flex: 1;
-    }
-    
-    .btn-read:hover {
-        background-color: #8e44ad;
-    }
-    
-    .empty-bookmarks {
-        text-align: center;
-        padding: 60px 20px;
-        color: #7f8c8d;
-    }
-    
-    .empty-bookmarks i {
-        color: #ddd;
-        margin-bottom: 20px;
-    }
-    
-    .bookmarks-section, .recommended-section {
-        margin-bottom: 40px;
-    }
-    
-    .bookmarks-grid, .recommended-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 25px;
-        margin-top: 20px;
-    }
-    
-    .recommended-section {
-        background-color: #f8f9fa;
-        padding: 25px;
-        border-radius: 12px;
-        border-left: 5px solid #f1c40f;
-    }
-    
-    .recommended-description {
-        color: #666;
-        margin-bottom: 20px;
-    }
-    
-    .book-description {
-        color: #666;
-        font-size: 0.95rem;
-        line-height: 1.5;
-        margin: 10px 0;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-`;
-document.head.appendChild(style);
+}
 
-window.toggleBookmark = toggleBookmark;
-window.openBookText = openBookText;
-window.removeFromBookmarks = removeFromBookmarks;
-window.closeBookTextModal = closeBookTextModal;
-window.toggleBookmarkFromModal = toggleBookmarkFromModal;
+// Показ ошибки
+function showError(message) {
+    const container = document.querySelector('.container') || document.body;
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.style.cssText = `
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #f5c6cb;
+        margin: 20px 0;
+        text-align: center;
+    `;
+    
+    errorDiv.innerHTML = `
+        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 10px;"></i>
+        <h3>Ошибка</h3>
+        <p>${message}</p>
+        <button onclick="location.reload()" class="btn btn-primary" style="margin-top: 10px;">
+            <i class="fas fa-redo"></i> Попробовать снова
+        </button>
+    `;
+    
+    if (container === document.body) {
+        container.prepend(errorDiv);
+    } else {
+        container.prepend(errorDiv);
+    }
+}
